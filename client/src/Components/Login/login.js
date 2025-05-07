@@ -27,11 +27,13 @@ function Login() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false); // Loading state to show during API calls
     const navigate = useNavigate();
 
     // 🔐 Traditional login
     const handleLogin = async (e) => {
         e.preventDefault();
+        setLoading(true); // Start loading
 
         try {
             const res = await axios.post('http://localhost:5000/api/login', {
@@ -40,6 +42,10 @@ function Login() {
             });
 
             const { token, userData } = res.data;
+
+            if (!token || !userData) {
+                throw new Error("Login failed. No token or user data received.");
+            }
 
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(userData)); // save full user data including cart
@@ -60,6 +66,7 @@ function Login() {
 
             login({ ...userData, token }); // update context
             navigate('/');
+
         } catch (error) {
             console.error("Login error:", error.response?.data || error.message);
 
@@ -74,6 +81,8 @@ function Login() {
                 progressBar: true,
                 className: "red-toast"
             }).showToast();
+        } finally {
+            setLoading(false); // Stop loading
         }
     };
 
@@ -109,6 +118,7 @@ function Login() {
 
             login({ ...userData, token: jwtToken });
             navigate('/');
+
         } catch (error) {
             console.error("Google login error:", error.response?.data || error.message);
 
@@ -196,7 +206,7 @@ function Login() {
                                         </LoginOption>
 
                                         <LoginBtn>
-                                            <LoginButton type="submit">Sign In</LoginButton>
+                                            <LoginButton type="submit" disabled={loading}>Sign In</LoginButton>
                                         </LoginBtn>
                                     </Form>
 

@@ -95,7 +95,7 @@ function Register() {
         const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
 
         try {
-            const res = await axios.post('http://localhost:3002/UserApi/register', {
+            const res = await axios.post('http://localhost:5000/api/register', {
                 firstName,
                 lastName,
                 email,
