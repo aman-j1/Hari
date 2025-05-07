@@ -311,7 +311,6 @@ a {
 
 .toastify__toast-container {
   z-index: var(--toastify-z-index);
-  -webkit-transform: translateZ(var(--toastify-z-index));
   position: fixed;
   padding: 4px;
   width: var(--toastify-toast-width);
