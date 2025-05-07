@@ -49,7 +49,7 @@ export function Products() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/get-all');
+        const response = await axios.get('https://hari-1-cbck.onrender.com/api/get-all');
         const allProducts = response.data.Products;
         setProducts(allProducts);
 

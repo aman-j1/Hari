@@ -28,7 +28,7 @@ export const Product = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/get-all');
+        const res = await axios.get('https://hari-1-cbck.onrender.com/api/get-all');
         setProducts(res.data.Products);
         console.log(res.data)
       } catch (error) {
@@ -77,7 +77,7 @@ export const Product = () => {
 
     try {
       if (!isEditing) {
-        const response = await axios.post('http://localhost:5000/api/add-product', formDataToSend, {
+        const response = await axios.post('https://hari-1-cbck.onrender.com/api/add-product', formDataToSend, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -88,7 +88,7 @@ export const Product = () => {
         const confirmation = window.confirm("Are you sure you want to update this product?");
         if (!confirmation) return;
 
-        const response = await axios.put(`http://localhost:5000/api/update-product/${editId}`, formDataToSend, {
+        const response = await axios.put(`https://hari-1-cbck.onrender.com/api/update-product/${editId}`, formDataToSend, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -126,7 +126,7 @@ export const Product = () => {
     if (!confirmation) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/delete-product/${productId}`);
+      await axios.delete(`https://hari-1-cbck.onrender.com/api/delete-product/${productId}`);
       setMessage('Product deleted');
       setProducts((prev) => prev.filter((d) => d._id !== productId));
     } catch (error) {

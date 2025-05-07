@@ -24,7 +24,7 @@ const CategoryNames = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/get-all');
+        const res = await axios.get('https://hari-1-cbck.onrender.com/api/get-all');
         const products = res.data.Products;
         console.log(res.data);
 
@@ -54,7 +54,7 @@ const CategoryNames = () => {
             <Link to={`/products?category=${category.name}`}>
               <CategoryImage
                 // Use the category image map, fallback to Default if not found
-                src={`http://localhost:5000${categoryImageMap[category.name]}`}
+                src={`https://hari-1-cbck.onrender.com/${categoryImageMap[category.name]}`}
                 alt={category.name}
               />
               <p>{category.name}</p>

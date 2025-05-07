@@ -64,7 +64,7 @@ export default function WishlistPage() {
           <>
             {wishlist.map((item) => (
               <CartItem key={item._id}>
-                <ItemImage src={`http://localhost:3002${item.image}`} alt={item.name} />
+                <ItemImage src={`${item.image}`} alt={item.name} />
                 <ItemInfo>
                   <ItemTitle>{item.name}</ItemTitle>
                   <Price>${item.price}</Price>

@@ -36,7 +36,7 @@ function Login() {
         setLoading(true); // Start loading
 
         try {
-            const res = await axios.post('http://localhost:5000/api/login', {
+            const res = await axios.post('https://hari-1-cbck.onrender.com/api/login', {
                 email,
                 password
             });
@@ -95,7 +95,7 @@ function Login() {
                 throw new Error("No credential received from Google.");
             }
 
-            const res = await axios.post('http://localhost:5000/api/google-login', {
+            const res = await axios.post('https://hari-1-cbck.onrender.com/api/google-login', {
                 token
             });
 

@@ -142,7 +142,7 @@ export const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/get-product/${id}`);
+        const res = await axios.get(`https://hari-1-cbck.onrender.com/api/get-product/${id}`);
         setProduct(res.data.getProduct);
         console.log('Product fetched:', res.data.status);
       } catch (err) {
@@ -165,7 +165,7 @@ export const ProductDetail = () => {
       if (!product?._id) return;
 
       try {
-        const res = await axios.get(`http://localhost:5000/api/related-products/${product._id}`);
+        const res = await axios.get(`https://hari-1-cbck.onrender.com/api/related-products/${product._id}`);
         setRelatedProducts(res.data.relatedProducts);
         console.log(res.data.relatedProducts)
       } catch (err) {

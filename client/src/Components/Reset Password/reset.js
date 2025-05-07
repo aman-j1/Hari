@@ -27,7 +27,7 @@ export default function Reset() {
         e.preventDefault();
         setIsSendingOtp(true);
         try {
-            const response = await axios.post('http://localhost:3002/UserApi/send-otp', { email });
+            const response = await axios.post('https://hari-1-cbck.onrender.com/api/send-otp', { email });
             setToken(response.data.token);
             setStep(2);
             setMessage('OTP sent to your email.');
@@ -41,7 +41,7 @@ export default function Reset() {
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
         try {
-            const decoded = await axios.post('http://localhost:3002/UserApi/verify-otp', {
+            const decoded = await axios.post('https://hari-1-cbck.onrender.com/api/verify-otp', {
                 otp,
                 token,
                 newPassword: 'placeholder',
@@ -62,7 +62,7 @@ export default function Reset() {
     const handleResetPassword = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:3002/UserApi/verify-otp', { otp, token, newPassword });
+            await axios.post('https://hari-1-cbck.onrender.com/api/verify-otp', { otp, token, newPassword });
             setMessage('Password reset successful.');
             // Optionally redirect to login
         } catch (error) {
