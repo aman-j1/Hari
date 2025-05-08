@@ -1,0 +1,42 @@
+.mobileMenu li {
+    display: block;
+    margin-bottom: 25px;
+    margin-right: 0;
+}
+
+.mobileMenu li a {
+    padding: 0;
+    font-size: 18px;
+}
+
+.mobileMenu ul {
+    position: static;
+    display: none;
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    box-shadow: none;
+    padding-left: 25px;
+}
+
+.mobileMenu ul li {
+    margin-bottom: 11px;
+}
+
+
+.mobileMenu .submenu {
+    display: none;
+}
+.mobileMenu .submenu.open {
+    display: block;
+}
+
+@media (max-width: 648px){
+    .loginArea .user-name{
+        display: none;
+    }
+
+    .iHabYn {
+        padding:15px 0!important;
+    }
+}

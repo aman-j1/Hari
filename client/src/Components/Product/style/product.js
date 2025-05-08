@@ -3,6 +3,10 @@ import styled from 'styled-components';
 export const ProductSection = styled.div`
   padding-bottom: 20px;
   padding-top: 100px;
+
+  @media (max-width: 767px){
+    padding-top: 10px;
+  }
 `;
 
 export const Containers = styled.div`
@@ -14,14 +18,6 @@ export const Containers = styled.div`
   margin-right: auto;
   margin-left: auto;
 
-  @media (min-width: 576px) {
-    max-width: 540px;
-  }
-
-  @media (min-width: 768px) {
-    max-width: 720px;
-  }
-
   @media (min-width: 992px) {
     max-width: 960px;
   }
@@ -32,6 +28,10 @@ export const Containers = styled.div`
 
   @media (min-width: 1400px) {
     max-width: 1320px;
+  }
+
+  @media (max-width: 767px){
+    max-width: 100%;
   }
 `;
 
@@ -140,7 +140,7 @@ export const TabberList = styled.li`
 
 export const TabberButton = styled.button`
   font-weight: 500;
-    font-size: 14px;
+    font-size: 18px;
     color: var(--tp-text-1);
     padding-left: 5px;
     padding-right: 5px;
@@ -306,13 +306,14 @@ export const ProductContent = styled.div`
 
 export const ProductTitle = styled.h3`
   font-family: var(--tp-ff-inter);
-  font-weight: 400;
-  font-size: 14px;
+  font-size: 20px;
+  margin-bottom: 10px;
+  font-weight: 500;
 `;
 
 export const ProductPricing = styled.div`
   font-weight: 500;
-  font-size: 15px;
+  font-size: 17px;
   color: var(--tp-text-1);
 `;
 

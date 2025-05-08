@@ -51,14 +51,6 @@ export const Containers = styled.div`
     margin-right: auto;
     margin-left: auto;
 
-    @media (min-width: 576px) {
-        max-width: 540px;
-    }
-
-    @media (min-width: 768px) {
-        max-width: 720px;
-    }
-
     @media (min-width: 992px) {
         max-width: 960px;
     }
@@ -69,6 +61,10 @@ export const Containers = styled.div`
 
     @media (min-width: 1400px) {
         max-width: 1320px;
+    }
+
+    @media (max-width: 767px){
+        max-width: 100%;
     }
 `;
 
@@ -100,6 +96,10 @@ export const BannerCol = styled.div`
     @media screen and (min-width: 1200px){
         flex: 0 0 auto;
         width: 50%;
+    }
+
+    &:first-child{
+        padding-top: 40px;
     }
 `;
 
@@ -139,6 +139,23 @@ export const BannerTitle = styled.h3`
     margin-bottom: 45px;
     animation-delay: .5s;
     animation-duration: 1s;
+
+    @media screen and (max-width: 1024px) {
+    font-size: 65px;
+  }
+
+  @media screen and (max-width: 767px) {
+    font-size: 50px;
+    margin-bottom: 10px;
+
+    br {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    font-size: 36px;
+  }
 `;
 
 export const BannerButton = styled(RouterLinks)`
@@ -152,6 +169,7 @@ export const BannerButton = styled(RouterLinks)`
     text-align: center;
     background: transparent;
     transition: all 0.3s ease;
+    line-height: 2;
 
     &:hover{
         background-color: var(--tp-common-black);

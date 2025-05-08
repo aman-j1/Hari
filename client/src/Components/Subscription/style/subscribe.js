@@ -21,14 +21,6 @@ export const Containers = styled.div`
     margin-right: auto;
     margin-left: auto;
 
-    @media (min-width: 576px) {
-        max-width: 540px;
-    }
-
-    @media (min-width: 768px) {
-        max-width: 720px;
-    }
-
     @media (min-width: 992px) {
         max-width: 960px;
     }
@@ -40,11 +32,22 @@ export const Containers = styled.div`
     @media (min-width: 1400px) {
         max-width: 1320px;
     }
+
+    @media (max-width: 767px){
+        max-width: 100%;
+    }
 `;
 
 export const CtaInner = styled.div`
     padding: 60px 70px;
     background-color: var(--tp-common-white);
+
+    @media screen and (max-width: 640px){
+        padding: 30px;
+        br{
+            display: none;
+        }
+    }
 `;
 
 export const Row = styled.div`
@@ -85,6 +88,10 @@ export const SubscribeTitle = styled.h3`
         color: var(--tp-heading-primary);
     margin-top: 0;
     font-weight: var(--tp-fw-bold);
+
+    @media screen and (max-width: 640px){
+        margin-bottom: 20px;
+    }
 `;
 
 export const Form = styled.form`

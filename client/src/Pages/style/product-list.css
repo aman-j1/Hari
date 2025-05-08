@@ -1,0 +1,15 @@
+.shopProduct {
+    width: 33.33%;
+}
+
+@media (max-width: 800px){
+    .shopProduct {
+        width: 50%;
+    }
+}
+
+@media (max-width: 480px){
+    .shopProduct {
+        width: 100%;
+    }
+}

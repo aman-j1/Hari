@@ -7,6 +7,9 @@ import {
   CategoryCol,
   CategoryImage
 } from './style/category';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import 'swiper/css';
 
 const CategoryNames = () => {
   const [categories, setCategories] = useState([]);
@@ -49,18 +52,33 @@ const CategoryNames = () => {
   return (
     <CategorySection>
       <Containers>
-        {categories.map((category, index) => (
-          <CategoryCol key={index}>
-            <Link to={`/products?category=${category.name}`}>
-              <CategoryImage
-                // Use the category image map, fallback to Default if not found
-                src={`https://hari-1-cbck.onrender.com${categoryImageMap[category.name]}`}
-                alt={category.name}
-              />
-              <p>{category.name}</p>
-            </Link>
-          </CategoryCol>
-        ))}
+        <Swiper
+          spaceBetween={0}
+          slidesPerView={4}
+          Navigation={true}
+          modules={[Navigation]}
+          breakpoints={{
+            320: { slidesPerView: 1 },
+            480: { slidesPerView: 2 },
+            768: { slidesPerView: 3 },
+            1280: { slidesPerView: 4 },
+          }}
+          style={{ width: "100%" }}>
+          {categories.map((category, index) => (
+            <SwiperSlide>
+              <CategoryCol key={index}>
+                <Link to={`/products?category=${category.name}`}>
+                  <CategoryImage
+                    // Use the category image map, fallback to Default if not found
+                    src={`https://hari-1-cbck.onrender.com${categoryImageMap[category.name]}`}
+                    alt={category.name}
+                  />
+                  <p>{category.name}</p>
+                </Link>
+              </CategoryCol>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </Containers>
     </CategorySection>
   );

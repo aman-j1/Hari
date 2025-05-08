@@ -51,12 +51,16 @@ import {
     CartCheckoutTitle,
     CartCheckoutTitleH4,
     VeiwCart,
-    CheckputBtn
+    CheckputBtn,
+    HeaderMobileMenu,
+    Hamburger,
+    Overlay
 } from "./style/header.js";
 
 import { menuItems } from "./Menu.js";
 import headerLogo from "../../Image/headerLogo.svg";
 import EmptyCart from '../../Image/empty-cart.webp';
+import './style/header.css'
 
 function Headers() {
     const { user, logout } = useContext(AuthContext);
@@ -70,6 +74,8 @@ function Headers() {
     const [scrolled, setScrolled] = useState(false);
 
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [activeSubmenu, setActiveSubmenu] = useState(null);
 
     const toggleCart = () => {
         setIsCartOpen(prev => !prev);
@@ -89,7 +95,19 @@ function Headers() {
     const total = cart.reduce(
         (acc, item) => acc + item.price * item.quantity,
         0
-      );
+    );
+
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(prev => !prev);
+    };
+
+    const closeMobileMenu = () => {
+        setIsMobileMenuOpen(false);
+    };
+
+    const toggleSubmenu = (id) => {
+        setActiveSubmenu(prev => (prev === id ? null : id));
+    };
     useEffect(() => {
         const handleScroll = () => {
             const isScrolled = window.scrollY > 50;
@@ -199,7 +217,7 @@ function Headers() {
                                                                         borderRadius: "50%"
                                                                     }}
                                                                 >{user.firstName ? user.firstName[0].toUpperCase() : ''}</p>
-                                                                <p>
+                                                                <p className="user-name">
                                                                     {user.firstName}
                                                                 </p>
                                                                 <span
@@ -263,6 +281,12 @@ function Headers() {
                                                     </ActionItem>
                                                 </ActionList>
                                             </Actions>
+
+                                            <Hamburger onClick={toggleMobileMenu}>
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                            </Hamburger>
                                         </BottomRight>
                                     </RightSection>
                                 </Row>
@@ -271,6 +295,48 @@ function Headers() {
                     </HeaderSticky>
                 </HeaderArea>
             </Header>
+            <Overlay className={isMobileMenuOpen ? "opened" : ""} onClick={closeMobileMenu}></Overlay>
+
+            <HeaderMobileMenu className={isMobileMenuOpen ? "opened" : ""}>
+                <div className="closebtn" onClick={closeMobileMenu} style={{fontSize: "37px"}}>×</div>
+                <nav>
+                    <Ul className="mobileMenu">
+                        {menuItems.map((item) => (
+                            <ListItem
+                                key={item.id}
+                                className={item.children ? "has-dropdown" : ""}
+                            >
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <MenuLink to={item.path}>{item.name}</MenuLink>
+                                    {item.children && (
+                                        <span
+                                            style={{ cursor: 'pointer', paddingLeft: '10px' }}
+                                            onClick={() => toggleSubmenu(item.id)}
+                                        >
+                                            {activeSubmenu === item.id ? '▲' : '▼'}
+                                        </span>
+                                    )}
+                                </div>
+
+                                {item.children && (
+                                    <SubMenu
+                                        className="submenu"
+                                        style={{ display: activeSubmenu === item.id ? 'block' : 'none' }}
+                                    >
+                                        {item.children.map((child) => (
+                                            <SubList key={child.id}>
+                                                <SubMenuLink to={child.path}>
+                                                    {child.name}
+                                                </SubMenuLink>
+                                            </SubList>
+                                        ))}
+                                    </SubMenu>
+                                )}
+                            </ListItem>
+                        ))}
+                    </Ul>
+                </nav>
+            </HeaderMobileMenu>
 
             <CartMini className={isCartOpen ? "opened" : ""}>
                 <CartMiniWrap>
@@ -314,8 +380,8 @@ function Headers() {
                                                 </CartQuantity>
                                             </CartPriceWrapper>
                                         </CartContent>
-                                        <RemoveBtn onClick={() => handleRemove(item._id)} style={{fontSize: "25px"}}>
-                                        ×
+                                        <RemoveBtn onClick={() => handleRemove(item._id)} style={{ fontSize: "25px" }}>
+                                            ×
                                         </RemoveBtn>
                                     </CartWidgetItem>
                                 ))}

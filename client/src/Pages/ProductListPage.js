@@ -64,6 +64,8 @@ import {
 import { useCart } from '../Context/cartContent'; // ✅ Import useCart
 import { Link } from 'react-router-dom';
 
+import './style/product-list.css';
+
 
 const ITEMS_PER_PAGE = 9;
 
@@ -288,7 +290,7 @@ export function ProductListPage() {
                                         <ProductTab>
                                             <Row>
                                                 {currentItems.map(product => (
-                                                    <ProductItemWrap key={product._id} style={{ width: "33.33%" }}>
+                                                    <ProductItemWrap key={product._id} className='shopProduct'>
                                                         <ProductItem>
                                                             <ProductThumb>
                                                                 <Link to={`/product/${product._id}`}>

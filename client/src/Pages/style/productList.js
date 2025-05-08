@@ -17,13 +17,6 @@ export const Containers = styled.div`
     margin-right: auto;
     margin-left: auto;
 
-    @media (min-width: 576px) {
-        max-width: 540px;
-    }
-
-    @media (min-width: 768px) {
-        max-width: 720px;
-    }
 
     @media (min-width: 992px) {
         max-width: 960px;
@@ -35,6 +28,10 @@ export const Containers = styled.div`
 
     @media (min-width: 1400px) {
         max-width: 1320px;
+    }
+
+    @media (max-width: 767px){
+        max-width: 100%;
     }
 `;
 

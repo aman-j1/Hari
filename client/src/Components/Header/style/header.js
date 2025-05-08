@@ -36,7 +36,7 @@ export const HeaderSticky = styled.div`
   }
 
    @media (max-width: 991px) {
-    padding: 15px 20px;
+    padding: 15px 0px;
   }
 `;
 
@@ -64,7 +64,7 @@ export const Row = styled.div`
 export const Logo = styled.div`
   flex-shrink: 0;
   padding: 0 calc(var(--bs-gutter-x) * 0.5);
-  width: 100%;
+  width: 30%;
 
   @media (min-width: 576px) {
     width: 41.666667%;
@@ -200,7 +200,7 @@ export const SubMenuLink = styled(RouterLink)`
 export const RightSection = styled.div`
   flex-shrink: 0;
   padding: 0 calc(var(--bs-gutter-x) * 0.5);
-  width: 100%;
+  width: 70%;
 
   @media (min-width: 576px) {
     width: 58.333333%;
@@ -265,7 +265,6 @@ export const Button = styled.button`
 `;
 
 export const Actions = styled.div`
-  display: none;
   margin-left: 42px;
 
   @media (min-width: 768px) {
@@ -578,4 +577,75 @@ export const CheckputBtn = styled(RouterLink)`
     background-color: var(--tp-common-black);
     color: var(--tp-common-white);
   }
+`;
+
+export const Hamburger = styled.div`
+  width: 24px;
+  height: auto;
+  position: relative;
+  cursor: pointer;
+  
+
+  & span{
+    width: 100%;
+    height: 2.5px;
+    background: #000;
+    display: block;
+
+    &:first-child{
+      margin-top: 0;
+      margin-bottom: 4px;
+    }
+
+    &:last-child{
+      margin-top: 4px;
+    }
+  }
+
+  @media(min-width: 1200px){
+    display: none;
+  }
+`;
+
+export const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0 0 0/40%);
+  z-index: 99;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+
+  &.opened{
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+  }
+`;
+
+export const HeaderMobileMenu = styled.div`
+  position: fixed;
+  top: 0;
+  right: -200%;
+  width: 400px;
+  height: 100%;
+  background-color: #fff;
+  z-index: 100;
+  padding: 40px 20px 20px;
+  transition: right 0.4s ease;
+
+  &.opened{
+    right: 0;
+  }
+
+  & > .closebtn {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    cursor: pointer;
+}
 `;
