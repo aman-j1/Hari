@@ -13,7 +13,7 @@ router.get('/related-products/:id', ProductController.getRelatedProducts)
 router.get('/get-all', ProductController.getAllProduct);
 
 //Update Product
-router.put('/update-product/:id', upload.single('image'), ProductController.updateProduct);
+router.put('/update-product/:id', Uploader.single('image'), ProductController.updateProduct);
 
 // Delete
 router.delete('/delete-product/:id', ProductController.deletePoduct);
