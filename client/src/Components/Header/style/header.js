@@ -648,4 +648,8 @@ export const HeaderMobileMenu = styled.div`
     right: 20px;
     cursor: pointer;
 }
+
+@media (max-width: 400px){
+  width: 100%;
+}
 `;

@@ -279,14 +279,15 @@ function Headers() {
                                                             <Count>{cart?.length || 0}</Count>
                                                         </ActionButton>
                                                     </ActionItem>
+
+                                                    {/* Hamburger */}
+                                                    <Hamburger onClick={toggleMobileMenu}>
+                                                        <span></span>
+                                                        <span></span>
+                                                        <span></span>
+                                                    </Hamburger>
                                                 </ActionList>
                                             </Actions>
-
-                                            <Hamburger onClick={toggleMobileMenu}>
-                                                <span></span>
-                                                <span></span>
-                                                <span></span>
-                                            </Hamburger>
                                         </BottomRight>
                                     </RightSection>
                                 </Row>
@@ -298,7 +299,7 @@ function Headers() {
             <Overlay className={isMobileMenuOpen ? "opened" : ""} onClick={closeMobileMenu}></Overlay>
 
             <HeaderMobileMenu className={isMobileMenuOpen ? "opened" : ""}>
-                <div className="closebtn" onClick={closeMobileMenu} style={{fontSize: "37px"}}>×</div>
+                <div className="closebtn" onClick={closeMobileMenu} style={{ fontSize: "37px" }}>×</div>
                 <nav>
                     <Ul className="mobileMenu">
                         {menuItems.map((item) => (

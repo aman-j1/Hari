@@ -175,6 +175,11 @@ export const TabberButton = styled.button`
     left: 0;
     right: auto;
     }
+
+
+    @media (max-width: 480px){
+      font-size: 15px;
+    }
 `;
 
 export const ProductItemWrap = styled.div`
