@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import './Product.css';
 
 export const Product = () => {
@@ -37,7 +36,7 @@ export const Product = () => {
       try {
         const res = await axios.get('https://hari-1-cbck.onrender.com/api/get-all');
         setProducts(res.data.Products);
-        console.log(res.data)
+        console.log(res.data);
       } catch (error) {
         console.log('Error fetching products', error);
       }
@@ -48,7 +47,7 @@ export const Product = () => {
 
   const handleChange = (e) => {
     const { name, value, files, type, checked } = e.target;
-
+  
     if (name.startsWith("deal.")) {
       const dealField = name.split(".")[1];
       setFormData((prev) => ({
@@ -61,12 +60,12 @@ export const Product = () => {
     } else if (name === "image") {
       setFormData((prev) => ({
         ...prev,
-        image: files[0],
+        image: files[0], // If it's an image field, store the file
       }));
     } else {
       setFormData((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: value, // For all other fields, store the value
       }));
     }
   };
@@ -74,6 +73,7 @@ export const Product = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Construct the FormData object to send
     const formDataToSend = new FormData();
     formDataToSend.append("title", formData.title);
     formDataToSend.append("tags", JSON.stringify(formData.tags.split(',').map(tag => tag.trim())));
@@ -93,32 +93,26 @@ export const Product = () => {
     formDataToSend.append("deal[isActive]", formData.deal.isActive);
     formDataToSend.append("deal[expiry]", formData.deal.expiry);
 
+    // Append image if present
     if (formData.image) {
       formDataToSend.append("image", formData.image);
     }
 
     try {
       if (!isEditing) {
-        const response = await axios.post('https://hari-1-cbck.onrender.com/api/add-product', formDataToSend, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        const response = await axios.post('https://hari-1-cbck.onrender.com/api/add-product', formDataToSend);
         setMessage('Product added successfully');
         setProducts(prev => [...prev, response.data.product]);
       } else {
         const confirmation = window.confirm("Are you sure you want to update this product?");
         if (!confirmation) return;
 
-        const response = await axios.put(`https://hari-1-cbck.onrender.com/api/update-product/${editId}`, formDataToSend, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
+        const response = await axios.put(`https://hari-1-cbck.onrender.com/api/update-product/${editId}`, formDataToSend);
         setMessage('Product updated successfully');
         setProducts(prev => prev.map(p => (p._id === editId ? response.data : p)));
       }
 
+      // Reset the form after submission
       setFormData({
         title: '',
         image: null,
@@ -145,7 +139,7 @@ export const Product = () => {
       setIsEditing(false);
       setEditId(null);
     } catch (error) {
-      console.log("Error", error);
+      console.log("Error", error.message);
       setMessage(isEditing ? 'Failed to update product' : 'Failed to add product');
     }
   };
@@ -167,8 +161,8 @@ export const Product = () => {
   const handleEdit = (prod) => {
     setFormData({
       title: prod.title,
-      image: null,
-      tags: prod.tags ? prod.tags.join(', ') : '',
+      image: null, // Do not prepopulate image
+      tags: prod.tags ? prod.tags.join(', ') : '', // Convert tags array to comma-separated string
       categoryName: prod.category?.name || '',
       price: prod.price,
       SKU: prod.SKU,
@@ -188,8 +182,8 @@ export const Product = () => {
       }
     });
     setIsEditing(true);
-    setEditId(prod._id);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setEditId(prod._id); // Set the product ID for updating
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to the top
   };
 
   return (
@@ -244,42 +238,28 @@ export const Product = () => {
           <input
             name="deal.expiry"
             type="datetime-local"
+            placeholder="Expiry Date"
             value={formData.deal.expiry}
             onChange={handleChange}
           />
         </div>
 
-        <button type="submit" className="submit-button">
-          {isEditing ? "Update Product" : "Add Product"}
-        </button>
+        <button type="submit">{isEditing ? 'Update Product' : 'Add Product'}</button>
       </form>
 
-      {message && <div className="message">{message}</div>}
-
-      <div className="product-list-section">
-        <h2>All Products</h2>
-        <ul className="product-list">
-          {products.map((item, indx) => (
-            <li key={indx} className="product-card">
-
-              <Link to={`/product/${item._id}`}>
-                <img src={item.imageUrl} alt={item.title} />
-                <h3>{item.title}</h3>
-              </Link>
-
-              <p>${item.price}</p>
-              <p className='category'>{item.category?.name}</p>
-              {item.tags && item.tags.map((tag, index) => (
-                <span key={index}>{tag}</span>
-              ))}
-              <div className="card-actions">
-                <button onClick={() => handleEdit(item)} className="edit-btn">Update</button>
-                <button onClick={() => handleDelete(item._id)} className="delete-btn">Delete</button>
-              </div>
-            </li>
-          ))}
-        </ul>
+      <h2>Products List</h2>
+      <div className="product-list">
+        {products.map((prod) => (
+          <div key={prod._id} className="product-card">
+            <img src={prod.imageUrl || 'default-image-url.jpg'} alt={prod.title} />
+            <h3>{prod.title}</h3>
+            <button onClick={() => handleEdit(prod)}>Edit</button>
+            <button onClick={() => handleDelete(prod._id)}>Delete</button>
+          </div>
+        ))}
       </div>
+
+      {message && <p className="message">{message}</p>}
     </div>
   );
 };

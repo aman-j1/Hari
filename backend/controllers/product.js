@@ -169,66 +169,45 @@ exports.getProductById = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
     try {
+        const { title, tags, categoryName, price, SKU, description, brand, specs, sort, sale, stock, salePercent, deal } = req.body;
         const product = await ProductModel.findById(req.params.id);
+    
         if (!product) {
-            return res.status(404).send({
-                status: false,
-                message: "Product Not Found"
-            });
+          return res.status(404).json({ message: "Product not found" });
         }
-
-        const updatedData = {
-            title: req.body.title,
-            tags: req.body.tags ? JSON.parse(req.body.tags) : product.tags,
-            category: {
-                name: req.body.categoryName || product.category.name
-            },
-            price: req.body.price ? parseFloat(req.body.price) : product.price,
-            SKU: req.body.SKU || product.SKU,
-            description: req.body.description || product.description,
-            brand: req.body.brand || product.brand,
-            specs: req.body.specs || product.specs,
-            sort: req.body.sort || product.sort,
-            sale: req.body.sale || product.sale,
-            stock: req.body.stock ? parseInt(req.body.stock) : product.stock,
-            salePercent: req.body.salePercent ? parseFloat(req.body.salePercent) : product.salePercent,
-            deal: {
-                isDeal: req.body["deal[isDeal]"] === 'true',
-                discountPercent: req.body["deal[discountPercent]"]
-                    ? parseFloat(req.body["deal[discountPercent]"])
-                    : product.deal?.discountPercent || 0,
-                couponCode: req.body["deal[couponCode]"] || product.deal?.couponCode || '',
-                isActive: req.body["deal[isActive]"] === 'true',
-                expiry: req.body["deal[expiry]"]
-                    ? new Date(req.body["deal[expiry]"])
-                    : product.deal?.expiry || null
-            }
+    
+        product.title = title;
+        product.tags = JSON.parse(tags);
+        product.categoryName = categoryName;
+        product.price = parseFloat(price);
+        product.SKU = SKU;
+        product.description = description;
+        product.brand = brand;
+        product.specs = specs;
+        product.sort = sort;
+        product.sale = sale;
+        product.stock = stock;
+        product.salePercent = salePercent;
+        product.deal = {
+          isDeal: deal.isDeal === 'true',
+          discountPercent: parseFloat(deal.discountPercent),
+          couponCode: deal.couponCode,
+          isActive: deal.isActive === 'true',
+          expiry: deal.expiry ? new Date(deal.expiry) : null
         };
-
+    
         if (req.file) {
-            const uploadResult = await uploadFile(req.file.path);
-            updatedData.imageUrl = uploadResult.secure_url;
-            await fs.unlink(req.file.path); // cleanup local file
+          const uploadResult = await uploadFile(req.file.path);
+          product.imageUrl = uploadResult.secure_url;
+          fs.unlinkSync(req.file.path); // Cleanup the uploaded file
         }
-
-        const updated = await ProductModel.findByIdAndUpdate(req.params.id, updatedData, {
-            new: true,
-            runValidators: true
-        });
-
-        return res.status(200).send({
-            status: true,
-            message: "Product updated successfully",
-            product: updated
-        });
-    } catch (error) {
-        console.error("Update Error:", error);
-        return res.status(500).send({
-            status: false,
-            message: "Error updating product",
-            error: error.message
-        });
-    }
+    
+        await product.save();
+        res.json({ message: "Product updated successfully", product });
+      } catch (error) {
+        console.error('Update Error:', error);
+        res.status(500).json({ message: "Failed to update product", error });
+      }
 }
 
 
