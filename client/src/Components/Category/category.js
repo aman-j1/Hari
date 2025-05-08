@@ -54,7 +54,7 @@ const CategoryNames = () => {
             <Link to={`/products?category=${category.name}`}>
               <CategoryImage
                 // Use the category image map, fallback to Default if not found
-                src={`https://hari-1-cbck.onrender.com/${categoryImageMap[category.name]}`}
+                src={`https://hari-1-cbck.onrender.com${categoryImageMap[category.name]}`}
                 alt={category.name}
               />
               <p>{category.name}</p>
