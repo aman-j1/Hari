@@ -4,6 +4,12 @@ import styled from "styled-components";
 export const LoginArea = styled.section`
     padding-top: 110px;
     padding-bottom: 110px;
+
+
+    @media (max-width: 767px){
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
 `;
 
 export const Container = styled.div`
@@ -15,14 +21,6 @@ export const Container = styled.div`
     margin-right: auto;
     margin-left: auto;
 
-    @media (min-width: 576px) {
-        max-width: 540px;
-}
-
-   @media (min-width: 768px) {
-        max-width: 720px;
-}
-
    @media (min-width: 992px) {
         max-width: 960px;
 }
@@ -33,6 +31,10 @@ export const Container = styled.div`
 
    @media (min-width: 1400px) {
         max-width: 1320px;
+}
+
+@media (max-width: 767px){
+    max-width: 100%;
 }
 `;
 
@@ -125,7 +127,12 @@ export const LoginCol = styled.div`
 export const LoginWrap = styled.div`
     padding: 50px 85px 55px;
     background: var(--tp-common-white);
-    box-shadow: 0 30px 60px rgba(3, 4, 28, .1);
+    box-shadow: 20px 30px 60px 56px rgba(3, 4, 28, .1);
+
+    @media (max-width: 600px){
+        padding-left: 20px;
+        padding-right: 20px;
+    }
 `;
 
 export const LoginTop = styled.div`

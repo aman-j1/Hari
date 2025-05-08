@@ -115,6 +115,10 @@ export const CtaInputField = styled.input`
     line-height: 54px;
         outline: none;
         transition: all .3s ease-out 0s;
+
+        @media (max-width: 550px){
+            padding-right: 29px;
+        }
 `;
 
 export const CTAButton = styled.button`
@@ -138,5 +142,11 @@ export const CTAButton = styled.button`
     &:hover{
             background-color: var(--tp-theme-1);
     color: var(--tp-common-white);
+    }
+
+    @media (max-width: 550px){
+        position: static;
+        margin-top: 10px;
+        width: 100%;
     }
 `;

@@ -63,6 +63,13 @@ const ProductModel = new mongoose.Schema({
         type: Date,
         default: Date.now,  // Default to current timestamp
     },
+    deal: {
+        isDeal: { type: Boolean, default: false },
+        discountPercent: { type: Number, default: 0 }, // e.g., 10, 15
+        couponCode: { type: String },                 // e.g., "WINTER23"
+        isActive: { type: Boolean, default: false },
+        expiry: { type: Date },
+    }
 
 })
 

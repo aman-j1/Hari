@@ -17,7 +17,14 @@ export const Product = () => {
     sort: "",
     sale: "",
     stock: "",
-    salePercent: ""
+    salePercent: "",
+    deal: {
+      isDeal: false,
+      discountPercent: "",
+      couponCode: "",
+      isActive: false,
+      expiry: ""
+    }
   });
 
   const [message, setMessage] = useState('');
@@ -40,8 +47,18 @@ export const Product = () => {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "image") {
+    const { name, value, files, type, checked } = e.target;
+
+    if (name.startsWith("deal.")) {
+      const dealField = name.split(".")[1];
+      setFormData((prev) => ({
+        ...prev,
+        deal: {
+          ...prev.deal,
+          [dealField]: type === "checkbox" ? checked : value
+        }
+      }));
+    } else if (name === "image") {
       setFormData((prev) => ({
         ...prev,
         image: files[0],
@@ -70,6 +87,11 @@ export const Product = () => {
     formDataToSend.append("sale", formData.sale);
     formDataToSend.append("stock", formData.stock);
     formDataToSend.append("salePercent", formData.salePercent);
+    formDataToSend.append("deal[isDeal]", formData.deal.isDeal);
+    formDataToSend.append("deal[discountPercent]", formData.deal.discountPercent);
+    formDataToSend.append("deal[couponCode]", formData.deal.couponCode);
+    formDataToSend.append("deal[isActive]", formData.deal.isActive);
+    formDataToSend.append("deal[expiry]", formData.deal.expiry);
 
     if (formData.image) {
       formDataToSend.append("image", formData.image);
@@ -110,7 +132,14 @@ export const Product = () => {
         sort: '',
         sale: '',
         stock: '',
-        salePercent: ''
+        salePercent: '',
+        deal: {
+          isDeal: false,
+          discountPercent: '',
+          couponCode: '',
+          isActive: false,
+          expiry: ''
+        }
       });
 
       setIsEditing(false);
@@ -149,7 +178,14 @@ export const Product = () => {
       sort: prod.sort || '',
       sale: prod.sale || '',
       stock: prod.stock || '',
-      salePercent: prod.salePercent || ''
+      salePercent: prod.salePercent || '',
+      deal: {
+        isDeal: prod.deal?.isDeal || false,
+        discountPercent: prod.deal?.discountPercent || '',
+        couponCode: prod.deal?.couponCode || '',
+        isActive: prod.deal?.isActive || false,
+        expiry: prod.deal?.expiry ? new Date(prod.deal.expiry).toISOString().slice(0, 16) : ''
+      }
     });
     setIsEditing(true);
     setEditId(prod._id);
@@ -175,6 +211,42 @@ export const Product = () => {
           <input name="stock" placeholder="Stock" value={formData.stock} onChange={handleChange} />
           <input name="salePercent" placeholder="Sale Percent" value={formData.salePercent} onChange={handleChange} />
           <input type="file" name="image" onChange={handleChange} required={!isEditing} />
+          <h3>Deal Information</h3>
+          <label>
+            <input
+              type="checkbox"
+              name="deal.isDeal"
+              checked={formData.deal.isDeal}
+              onChange={handleChange}
+            /> Is Deal?
+          </label>
+          <input
+            name="deal.discountPercent"
+            type="number"
+            placeholder="Discount Percent"
+            value={formData.deal.discountPercent}
+            onChange={handleChange}
+          />
+          <input
+            name="deal.couponCode"
+            placeholder="Coupon Code"
+            value={formData.deal.couponCode}
+            onChange={handleChange}
+          />
+          <label>
+            <input
+              type="checkbox"
+              name="deal.isActive"
+              checked={formData.deal.isActive}
+              onChange={handleChange}
+            /> Is Active?
+          </label>
+          <input
+            name="deal.expiry"
+            type="datetime-local"
+            value={formData.deal.expiry}
+            onChange={handleChange}
+          />
         </div>
 
         <button type="submit" className="submit-button">
@@ -189,12 +261,12 @@ export const Product = () => {
         <ul className="product-list">
           {products.map((item, indx) => (
             <li key={indx} className="product-card">
-              
+
               <Link to={`/product/${item._id}`}>
                 <img src={item.imageUrl} alt={item.title} />
                 <h3>{item.title}</h3>
               </Link>
-              
+
               <p>${item.price}</p>
               <p className='category'>{item.category?.name}</p>
               {item.tags && item.tags.map((tag, index) => (

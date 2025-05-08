@@ -7,7 +7,8 @@ exports.addProduct = async (req, res) => {
     try {
         const {
             title, tags, categoryName, price, SKU,
-            description, brand, specs, sort, sale, stock, salePercent
+            description, brand, specs, sort, sale, stock, salePercent,
+            deal
         } = req.body;
 
         if (!title || !tags || !SKU) {
@@ -57,7 +58,14 @@ exports.addProduct = async (req, res) => {
             sort,
             sale,
             stock: stock ? parseInt(stock) : 0,
-            salePercent: salePercent ? parseFloat(salePercent) : 0
+            salePercent: salePercent ? parseFloat(salePercent) : 0,
+            deal: {
+                isDeal: deal?.isDeal || false,
+                discountPercent: deal?.discountPercent || 0,
+                couponCode: deal?.couponCode || '',
+                isActive: deal?.isActive || false,
+                expiry: deal?.expiry ? new Date(deal.expiry) : null
+            }
         });
 
         const saved = await newProduct.save();
@@ -164,7 +172,8 @@ exports.updateProduct = async (req, res) => {
         const UpdateProduct = await ProductModel.findByIdAndUpdate(
             req.params.id,
             req.body,
-            { new: true, runValidators: true });
+            { new: true, runValidators: true }
+        );
 
         if (!UpdateProduct) {
             res.status(400).send({
@@ -206,3 +215,21 @@ exports.deletePoduct = async (req, res) => {
         })
     }
 }
+
+exports.getDeals = async (req, res) => {
+    try {
+        const deals = await ProductModel.find({ "deal.isDeal": true, "deal.isActive": true });
+
+        return res.status(200).send({
+            status: true,
+            message: "Active deals retrieved",
+            deals
+        });
+    } catch (error) {
+        console.log('error', error);
+        return res.status(500).send({
+            status: false,
+            message: "Error retrieving deals"
+        });
+    }
+};
