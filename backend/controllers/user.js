@@ -168,23 +168,32 @@ exports.verifyOtp = async (req, res) => {
     }
 }
 
-exports.getUserCart = async (req, res) => {
+// controller/userController.js
+exports.addToCart = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const { userId, productId } = req.body;
 
-    const user = await UserModel.findById(userId)
-      .populate('cart.productId');
+    const user = await UserModel.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    return res.status(200).json({
-      success: true,
-      cart: user.cart
+    const productExists = user.cart.some(item => item.productId.toString() === productId);
+
+    if (!productExists) {
+      user.cart.push({ productId });
+      await user.save();
+    }
+
+    const updatedUser = await UserModel.findById(userId).populate('cart.productId');
+
+    res.status(200).json({
+      message: "Product added to cart",
+      cart: updatedUser.cart
     });
   } catch (error) {
-    console.error("Get cart error:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    console.error("Add to cart error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

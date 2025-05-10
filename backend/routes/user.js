@@ -7,7 +7,7 @@ router.post('/google-login', UserController.googleLogin);
 router.post('/login', UserController.login);
 router.post('/send-otp', UserController.sendOtp);
 router.post('/verify-otp', UserController.verifyOtp);
-router.get('/cart/:id', UserController.getUserCart);
+router.get('/cart/add', UserController.addToCart);
 
 
 module.exports = router;
