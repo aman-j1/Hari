@@ -168,47 +168,78 @@ exports.getProductById = async (req, res) => {
 }
 
 exports.updateProduct = async (req, res) => {
-    try {
-        const { title, tags, categoryName, price, SKU, description, brand, specs, sort, sale, stock, salePercent, deal } = req.body;
-        const product = await ProductModel.findByIdAndUpdate(req.params.id);
-    
-        if (!product) {
-          return res.status(404).json({ message: "Product not found" });
-        }
-    
-        product.title = title;
-        product.tags = JSON.parse(tags);
-        product.categoryName = categoryName;
-        product.price = parseFloat(price);
-        product.SKU = SKU;
-        product.description = description;
-        product.brand = brand;
-        product.specs = specs;
-        product.sort = sort;
-        product.sale = sale;
-        product.stock = stock;
-        product.salePercent = salePercent;
-        product.deal = {
-          isDeal: deal.isDeal === 'true',
-          discountPercent: parseFloat(deal.discountPercent),
-          couponCode: deal.couponCode,
-          isActive: deal.isActive === 'true',
-          expiry: deal.expiry ? new Date(deal.expiry) : null
-        };
-    
-        if (req.file) {
-          const uploadResult = await uploadFile(req.file.path);
-          product.imageUrl = uploadResult.secure_url;
-          fs.unlinkSync(req.file.path); // Cleanup the uploaded file
-        }
-    
-        await product.save();
-        res.json({ message: "Product updated successfully", product });
-      } catch (error) {
-        console.error('Update Error:', error);
-        res.status(500).json({ message: "Failed to update product", error });
+  try {
+    const {
+      title,
+      tags,
+      categoryName,
+      price,
+      SKU,
+      description,
+      brand,
+      specs,
+      sort,
+      sale,
+      stock,
+      salePercent,
+      deal
+    } = req.body;
+
+    const product = await ProductModel.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    if (title) product.title = title;
+    if (tags) {
+      try {
+        product.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
+      } catch (e) {
+        return res.status(400).json({ message: "Invalid JSON in 'tags'" });
       }
-}
+    }
+
+    if (categoryName) {
+      const normalized = categoryName.trim();
+      const capitalized = normalized.charAt(0).toUpperCase() + normalized.slice(1).toLowerCase();
+      product.category.name = capitalized;
+    }
+
+    if (price) product.price = parseFloat(price);
+    if (SKU) product.SKU = SKU;
+    if (description) product.description = description;
+    if (brand) product.brand = brand;
+    if (specs) product.specs = specs;
+    if (sort) product.sort = sort;
+    if (sale !== undefined) product.sale = sale === 'true' || sale === true;
+    if (stock !== undefined) product.stock = parseInt(stock);
+    if (salePercent !== undefined) product.salePercent = parseFloat(salePercent);
+
+    if (deal) {
+      product.deal = {
+        isDeal: deal.isDeal === 'true' || deal.isDeal === true,
+        discountPercent: parseFloat(deal.discountPercent) || 0,
+        couponCode: deal.couponCode || '',
+        isActive: deal.isActive === 'true' || deal.isActive === true,
+        expiry: deal.expiry ? new Date(deal.expiry) : null
+      };
+    }
+
+    if (req.file) {
+      const uploadResult = await uploadFile(req.file.path);
+      product.imageUrl = uploadResult.secure_url;
+      fs.unlinkSync(req.file.path); // Cleanup uploaded temp file
+    }
+
+    const updated = await product.save();
+
+    res.json({ message: "Product updated successfully", product: updated });
+  } catch (error) {
+    console.error('Update Error:', error);
+    res.status(500).json({ message: "Failed to update product", error: error.message });
+  }
+};
 
 
 exports.deletePoduct = async (req, res) => {
