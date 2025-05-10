@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import './Product.css';
 
 export const Product = () => {
@@ -36,7 +37,6 @@ export const Product = () => {
       try {
         const res = await axios.get('https://hari-1-cbck.onrender.com/api/get-all');
         setProducts(res.data.Products);
-        console.log(res.data);
       } catch (error) {
         console.log('Error fetching products', error);
       }
@@ -47,7 +47,7 @@ export const Product = () => {
 
   const handleChange = (e) => {
     const { name, value, files, type, checked } = e.target;
-  
+
     if (name.startsWith("deal.")) {
       const dealField = name.split(".")[1];
       setFormData((prev) => ({
@@ -60,12 +60,12 @@ export const Product = () => {
     } else if (name === "image") {
       setFormData((prev) => ({
         ...prev,
-        image: files[0], // If it's an image field, store the file
+        image: files[0],
       }));
     } else {
       setFormData((prev) => ({
         ...prev,
-        [name]: value, // For all other fields, store the value
+        [name]: value,
       }));
     }
   };
@@ -73,7 +73,6 @@ export const Product = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Construct the FormData object to send
     const formDataToSend = new FormData();
     formDataToSend.append("title", formData.title);
     formDataToSend.append("tags", JSON.stringify(formData.tags.split(',').map(tag => tag.trim())));
@@ -87,16 +86,22 @@ export const Product = () => {
     formDataToSend.append("sale", formData.sale);
     formDataToSend.append("stock", formData.stock);
     formDataToSend.append("salePercent", formData.salePercent);
-    formDataToSend.append("deal[isDeal]", formData.deal.isDeal);
+
+    // Deal fields - converted to strings
+    formDataToSend.append("deal[isDeal]", String(formData.deal.isDeal));
     formDataToSend.append("deal[discountPercent]", formData.deal.discountPercent);
     formDataToSend.append("deal[couponCode]", formData.deal.couponCode);
-    formDataToSend.append("deal[isActive]", formData.deal.isActive);
+    formDataToSend.append("deal[isActive]", String(formData.deal.isActive));
     formDataToSend.append("deal[expiry]", formData.deal.expiry);
 
-    // Append image if present
     if (formData.image) {
       formDataToSend.append("image", formData.image);
     }
+
+    // Debug log
+    // for (let [key, value] of formDataToSend.entries()) {
+    //   console.log(key, value);
+    // }
 
     try {
       if (!isEditing) {
@@ -112,27 +117,27 @@ export const Product = () => {
         setProducts(prev => prev.map(p => (p._id === editId ? response.data : p)));
       }
 
-      // Reset the form after submission
+      // Reset form
       setFormData({
-        title: '',
+        title: "",
         image: null,
-        tags: '',
-        categoryName: '',
-        price: '',
-        SKU: '',
-        description: '',
-        brand: '',
-        specs: '',
-        sort: '',
-        sale: '',
-        stock: '',
-        salePercent: '',
+        tags: "",
+        categoryName: "",
+        price: "",
+        SKU: "",
+        description: "",
+        brand: "",
+        specs: "",
+        sort: "",
+        sale: "",
+        stock: "",
+        salePercent: "",
         deal: {
           isDeal: false,
-          discountPercent: '',
-          couponCode: '',
+          discountPercent: "",
+          couponCode: "",
           isActive: false,
-          expiry: ''
+          expiry: ""
         }
       });
 
@@ -161,8 +166,8 @@ export const Product = () => {
   const handleEdit = (prod) => {
     setFormData({
       title: prod.title,
-      image: null, // Do not prepopulate image
-      tags: prod.tags ? prod.tags.join(', ') : '', // Convert tags array to comma-separated string
+      image: null,
+      tags: prod.tags ? prod.tags.join(', ') : '',
       categoryName: prod.category?.name || '',
       price: prod.price,
       SKU: prod.SKU,
@@ -182,8 +187,8 @@ export const Product = () => {
       }
     });
     setIsEditing(true);
-    setEditId(prod._id); // Set the product ID for updating
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to the top
+    setEditId(prod._id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -205,61 +210,50 @@ export const Product = () => {
           <input name="stock" placeholder="Stock" value={formData.stock} onChange={handleChange} />
           <input name="salePercent" placeholder="Sale Percent" value={formData.salePercent} onChange={handleChange} />
           <input type="file" name="image" onChange={handleChange} required={!isEditing} />
+
           <h3>Deal Information</h3>
           <label>
-            <input
-              type="checkbox"
-              name="deal.isDeal"
-              checked={formData.deal.isDeal}
-              onChange={handleChange}
-            /> Is Deal?
+            <input type="checkbox" name="deal.isDeal" checked={formData.deal.isDeal} onChange={handleChange} />
+            Is Deal?
           </label>
-          <input
-            name="deal.discountPercent"
-            type="number"
-            placeholder="Discount Percent"
-            value={formData.deal.discountPercent}
-            onChange={handleChange}
-          />
-          <input
-            name="deal.couponCode"
-            placeholder="Coupon Code"
-            value={formData.deal.couponCode}
-            onChange={handleChange}
-          />
+          <input name="deal.discountPercent" type="number" placeholder="Discount Percent" value={formData.deal.discountPercent} onChange={handleChange} />
+          <input name="deal.couponCode" placeholder="Coupon Code" value={formData.deal.couponCode} onChange={handleChange} />
           <label>
-            <input
-              type="checkbox"
-              name="deal.isActive"
-              checked={formData.deal.isActive}
-              onChange={handleChange}
-            /> Is Active?
+            <input type="checkbox" name="deal.isActive" checked={formData.deal.isActive} onChange={handleChange} />
+            Is Active?
           </label>
-          <input
-            name="deal.expiry"
-            type="datetime-local"
-            placeholder="Expiry Date"
-            value={formData.deal.expiry}
-            onChange={handleChange}
-          />
+          <input name="deal.expiry" type="datetime-local" value={formData.deal.expiry} onChange={handleChange} />
         </div>
 
-        <button type="submit">{isEditing ? 'Update Product' : 'Add Product'}</button>
+        <button type="submit" className="submit-button">
+          {isEditing ? "Update Product" : "Add Product"}
+        </button>
       </form>
 
-      <h2>Products List</h2>
-      <div className="product-list">
-        {products.map((prod) => (
-          <div key={prod._id} className="product-card">
-            <img src={prod.imageUrl || 'default-image-url.jpg'} alt={prod.title} />
-            <h3>{prod.title}</h3>
-            <button onClick={() => handleEdit(prod)}>Edit</button>
-            <button onClick={() => handleDelete(prod._id)}>Delete</button>
-          </div>
-        ))}
-      </div>
+      {message && <div className="message">{message}</div>}
 
-      {message && <p className="message">{message}</p>}
+      <div className="product-list-section">
+        <h2>All Products</h2>
+        <ul className="product-list">
+          {products.map((item, indx) => (
+            <li key={indx} className="product-card">
+              <Link to={`/product/${item._id}`}>
+                <img src={item.imageUrl} alt={item.title} />
+                <h3>{item.title}</h3>
+              </Link>
+              <p>${item.price}</p>
+              <p className='category'>{item.category?.name}</p>
+              {item.tags && item.tags.map((tag, index) => (
+                <span key={index}>{tag}</span>
+              ))}
+              <div className="card-actions">
+                <button onClick={() => handleEdit(item)} className="edit-btn">Update</button>
+                <button onClick={() => handleDelete(item._id)} className="delete-btn">Delete</button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

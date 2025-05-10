@@ -18,11 +18,12 @@ exports.addProduct = async (req, res) => {
             });
         }
 
-        const existing = await ProductModel.findOne({ title });
+        // Check by SKU (better uniqueness check than title)
+        const existing = await ProductModel.findOne({ SKU });
         if (existing) {
             return res.status(400).send({
                 status: false,
-                message: "Product already exists"
+                message: "Product with this SKU already exists"
             });
         }
 
@@ -33,22 +34,21 @@ exports.addProduct = async (req, res) => {
             });
         }
 
-        // Upload image
-        const uploadResult = await uploadFile(req.file.path);
-        await fs.unlink(req.file.path); // cleanup
+        // Optional: Validate image type
+        if (!req.file.mimetype.startsWith('image/')) {
+            return res.status(400).send({ status: false, message: "Only image files are allowed" });
+        }
 
-        // Normalize categoryName
+        const uploadResult = await uploadFile(req.file.path);
+        await fs.unlink(req.file.path); // cleanup local file
+
         const normalizedName = (categoryName || 'Others').trim();
         const capitalizedName = normalizedName.charAt(0).toUpperCase() + normalizedName.slice(1).toLowerCase();
-
-        // DEBUG
 
         const newProduct = new ProductModel({
             title,
             tags,
-            category: {
-                name: capitalizedName
-            },
+            category: { name: capitalizedName },
             imageUrl: uploadResult.secure_url,
             price,
             SKU,
@@ -77,7 +77,7 @@ exports.addProduct = async (req, res) => {
         });
 
     } catch (err) {
-        console.error(err);
+        console.error("Add product error:", err);
         return res.status(500).send({
             status: false,
             message: "Internal server error",
@@ -170,7 +170,7 @@ exports.getProductById = async (req, res) => {
 exports.updateProduct = async (req, res) => {
     try {
         const { title, tags, categoryName, price, SKU, description, brand, specs, sort, sale, stock, salePercent, deal } = req.body;
-        const product = await ProductModel.findById(req.params.id);
+        const product = await ProductModel.findByIdAndUpdate(req.params.id);
     
         if (!product) {
           return res.status(404).json({ message: "Product not found" });
