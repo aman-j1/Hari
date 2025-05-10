@@ -167,3 +167,24 @@ exports.verifyOtp = async (req, res) => {
         res.status(400).json({ message: 'OTP expired or invalid', error: err.message });
     }
 }
+
+exports.getUserCart = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const user = await UserModel.findById(userId)
+      .populate('cart.productId');
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      cart: user.cart
+    });
+  } catch (error) {
+    console.error("Get cart error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};

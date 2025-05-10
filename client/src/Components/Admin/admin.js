@@ -98,23 +98,26 @@ export const Product = () => {
       formDataToSend.append("image", formData.image);
     }
 
-    // Debug log
-    // for (let [key, value] of formDataToSend.entries()) {
-    //   console.log(key, value);
-    // }
-
     try {
       if (!isEditing) {
-        const response = await axios.post('https://hari-1-cbck.onrender.com/api/add-product', formDataToSend);
+        const response = await axios.post('https://hari-1-cbck.onrender.com/api/add-product', formDataToSend, {
+          headers: {
+            'Content-Type': 'multipart/form-data', // Ensuring the correct content type for file uploads
+          }
+        });
         setMessage('Product added successfully');
         setProducts(prev => [...prev, response.data.product]);
       } else {
         const confirmation = window.confirm("Are you sure you want to update this product?");
         if (!confirmation) return;
 
-        const response = await axios.put(`https://hari-1-cbck.onrender.com/api/update-product/${editId}`, formDataToSend);
+        const response = await axios.put(`https://hari-1-cbck.onrender.com/api/update-product/${editId}`, formDataToSend, {
+          headers: {
+            'Content-Type': 'multipart/form-data', // Ensuring the correct content type for file uploads
+          }
+        });
         setMessage('Product updated successfully');
-        setProducts(prev => prev.map(p => (p._id === editId ? response.data : p)));
+        setProducts(prev => prev.map(p => (p._id === editId ? response.data.product : p)));
       }
 
       // Reset form
