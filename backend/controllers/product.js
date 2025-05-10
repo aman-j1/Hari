@@ -188,15 +188,16 @@ exports.updateProduct = async (req, res) => {
     const product = await ProductModel.findById(req.params.id);
 
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ status: false, message: "Product not found" });
     }
 
     if (title) product.title = title;
+    
     if (tags) {
       try {
         product.tags = typeof tags === 'string' ? JSON.parse(tags) : tags;
       } catch (e) {
-        return res.status(400).json({ message: "Invalid JSON in 'tags'" });
+        return res.status(400).json({ status: false, message: "Invalid JSON in 'tags'" });
       }
     }
 
@@ -206,7 +207,7 @@ exports.updateProduct = async (req, res) => {
       product.category.name = capitalized;
     }
 
-    if (price) product.price = parseFloat(price);
+    if (price !== undefined) product.price = parseFloat(price);
     if (SKU) product.SKU = SKU;
     if (description) product.description = description;
     if (brand) product.brand = brand;
@@ -216,7 +217,7 @@ exports.updateProduct = async (req, res) => {
     if (stock !== undefined) product.stock = parseInt(stock);
     if (salePercent !== undefined) product.salePercent = parseFloat(salePercent);
 
-    if (deal) {
+    if (deal && typeof deal === 'object') {
       product.deal = {
         isDeal: deal.isDeal === 'true' || deal.isDeal === true,
         discountPercent: parseFloat(deal.discountPercent) || 0,
@@ -229,15 +230,24 @@ exports.updateProduct = async (req, res) => {
     if (req.file) {
       const uploadResult = await uploadFile(req.file.path);
       product.imageUrl = uploadResult.secure_url;
-      fs.unlinkSync(req.file.path); // Cleanup uploaded temp file
+      await fs.unlink(req.file.path); // ✅ async file deletion
     }
 
     const updated = await product.save();
 
-    res.json({ message: "Product updated successfully", product: updated });
+    res.status(200).json({
+      status: true,
+      message: "Product updated successfully",
+      product: updated
+    });
+
   } catch (error) {
     console.error('Update Error:', error);
-    res.status(500).json({ message: "Failed to update product", error: error.message });
+    res.status(500).json({
+      status: false,
+      message: "Failed to update product",
+      error: error.message
+    });
   }
 };
 
