@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const ProductRouter = require('./routes/product')
 const UserRouter = require('./routes/user')
+const OrderModel = require('./routes/order');
 const path = require('path');
 const fs = require('fs');
 
@@ -52,6 +53,7 @@ db.on('open', () => {
 
 app.use('/api', ProductRouter);
 app.use('/api', UserRouter);
+app.use('/api', OrderModel);
 
 
 const PORT = process.env.PORT || 5000;

@@ -85,13 +85,13 @@ export function ProductListPage() {
             type: 'ADD_TO_CART',
             payload: {
                 _id: product._id,
-                name: product.name,
+                name: product.title,
                 price: product.price,
                 image: product.imageUrl, // Assumes imageUrl has full or relative path
             },
         });
 
-        toast.success(`${product.name} added to cart!`, {
+        toast.success(`${product.title} added to cart!`, {
             position: "top-center",
             autoClose: 2000,
             hideProgressBar: false,
@@ -107,13 +107,13 @@ export function ProductListPage() {
           type: 'ADD_TO_WISHLIST',
           payload:{
             _id: product._id,
-            name: product.name,
+            name: product.title,
             price: product.price,
             image: product.imageUrl,
           },
         });
     
-        toast.success(`${product.name} added to Wishlist!`, {
+        toast.success(`${product.title} added to Wishlist!`, {
           position: "top-center",
           autoClose: 2000,
           hideProgressBar: false,

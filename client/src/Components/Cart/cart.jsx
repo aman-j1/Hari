@@ -90,7 +90,7 @@ export default function CartPage() {
           <>
             {cart.map((item) => (
               <CartItem key={item._id}>
-                <ItemImage src={item.image} alt={item.title} />
+                <ItemImage src={item.image} alt={item.name} />
                 <ItemInfo>
                   <ItemTitle>{item.name}</ItemTitle>
                   <SideInfo>
