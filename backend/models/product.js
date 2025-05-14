@@ -65,6 +65,9 @@ const ProductModel = new mongoose.Schema({
     },
     deal: {
         isDeal: { type: Boolean, default: false },
+        dealName:{
+            type: String, required: true
+        },
         discountPercent: { type: Number, default: 0 }, // e.g., 10, 15
         couponCode: { type: String },                 // e.g., "WINTER23"
         isActive: { type: Boolean, default: false },

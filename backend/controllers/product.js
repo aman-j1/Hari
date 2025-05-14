@@ -62,6 +62,7 @@ exports.addProduct = async (req, res) => {
             deal: {
                 isDeal: deal?.isDeal || false,
                 discountPercent: deal?.discountPercent || 0,
+                dealName: deal?.dealName,
                 couponCode: deal?.couponCode || '',
                 isActive: deal?.isActive || false,
                 expiry: deal?.expiry ? new Date(deal.expiry) : null
@@ -222,6 +223,7 @@ exports.updateProduct = async (req, res) => {
         isDeal: deal.isDeal === 'true' || deal.isDeal === true,
         discountPercent: parseFloat(deal.discountPercent) || 0,
         couponCode: deal.couponCode || '',
+        dealName: deal.dealName || "",
         isActive: deal.isActive === 'true' || deal.isActive === true,
         expiry: deal.expiry ? new Date(deal.expiry) : null
       };

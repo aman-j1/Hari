@@ -11,6 +11,7 @@ import {Subscription} from './Components/Subscription/subscription'
 import { ProductListPage } from './Pages/ProductListPage';
 import CartPage from './Components/Cart/cart';
 import WishlistPage from './Components/Wishlist/wishlist';
+import Checkout from './Components/checkout';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/wishlist" element={<WishlistPage />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
       <Subscription />
     </Router>
