@@ -7,11 +7,11 @@ require("dotenv").config();
 
 const razorpay = new Razorpay({
   key_id: process.env.KEY_API,
-  key_secret: process.env.KEY_SECRET,  // fixed typo here
+  key_secret: process.env.KEY_SECRET,
 });
 
 exports.createOrder = async (req, res) => {
-  const { userId, items } = req.body;
+  const { userId, items, billingName, billingPhone, billingAddress } = req.body;
 
   try {
     const user = await User.findById(userId);
@@ -26,7 +26,7 @@ exports.createOrder = async (req, res) => {
 
       totalAmount += product.price * item.quantity;
       validatedItems.push({
-        product: product._id,
+        product: item.productId,  // Only include productId
         quantity: item.quantity,
       });
     }
@@ -43,6 +43,9 @@ exports.createOrder = async (req, res) => {
       user: user._id,
       items: validatedItems,
       amount: totalAmount,
+      billingName,
+      billingPhone,
+      billingAddress,
       razorpayOrderId: razorpayOrder.id,
     });
 

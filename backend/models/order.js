@@ -12,6 +12,9 @@ const orderSchema = new mongoose.Schema({
   paymentStatus: { type: String, default: "pending" },
   razorpayOrderId: String,
   razorpayPaymentId: String,
+  billingName: { type: String, required: true },
+  billingPhone: { type: String, required: true },
+  billingAddress: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
 

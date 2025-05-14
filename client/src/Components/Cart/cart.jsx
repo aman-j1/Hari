@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useCart } from '../../Context/cartContent';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 import {
   BreadCrumbArea,
@@ -33,6 +34,10 @@ import EmptyCart from '../../Image/empty-cart.webp';
 
 export default function CartPage() {
   const { cart, dispatch } = useCart();
+  const [couponCode, setCouponCode] = useState('');
+  const [couponError, setCouponError] = useState('');
+  const [discountPercent, setDiscountPercent] = useState(0);
+  const [validCoupon, setValidCoupon] = useState(null);
 
   const handleIncrease = (id) => {
     dispatch({ type: 'INCREASE_QUANTITY', payload: { _id: id } });
@@ -46,14 +51,37 @@ export default function CartPage() {
     dispatch({ type: 'REMOVE_FROM_CART', payload: { _id: id } });
   };
 
-  const total = cart.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
-
-  const gst = total * 0.18;
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const discountAmount = (total * discountPercent) / 100;
+  const gst = (total - discountAmount) * 0.18;
   const deliveryFee = total <= 1000 ? 0 : 15;
-  const grandTotal = total + gst + deliveryFee;
+  const grandTotal = total - discountAmount + gst + deliveryFee;
+
+  const handleApplyCoupon = async () => {
+    try {
+      const res = await axios.get('https://hari-1-cbck.onrender.com/api/getAllDeals');
+      const { deals } = res.data;
+
+      const matchedDeal = deals.find(
+        d =>
+          d.deal.couponCode.toLowerCase() === couponCode.trim().toLowerCase() &&
+          d.deal.isActive
+      );
+
+      if (matchedDeal) {
+        setDiscountPercent(matchedDeal.deal.discountPercent);
+        setValidCoupon(matchedDeal.deal);
+        setCouponError('');
+      } else {
+        setDiscountPercent(0);
+        setValidCoupon(null);
+        setCouponError('Invalid or inactive coupon code.');
+      }
+    } catch (error) {
+      console.error(error);
+      setCouponError('Error validating coupon.');
+    }
+  };
 
   return (
     <>
@@ -61,21 +89,16 @@ export default function CartPage() {
         <Containers>
           <Row>
             <BreadcrumCol>
-              <BreadcrumbTitle>
-                My Cart
-              </BreadcrumbTitle>
-              <div className=''>
+              <BreadcrumbTitle>My Cart</BreadcrumbTitle>
+              <div>
                 <BreadItem>
                   <Link to="/">Home</Link>
                 </BreadItem>
                 &nbsp; &gt; &nbsp;
-                <BreadItem>
-                  Cart
-                </BreadItem>
+                <BreadItem>Cart</BreadItem>
               </div>
             </BreadcrumCol>
           </Row>
-
         </Containers>
       </BreadCrumbArea>
 
@@ -83,7 +106,7 @@ export default function CartPage() {
         {cart.length === 0 ? (
           <>
             <img src={EmptyCart} alt="Empty" />
-            <CartEmptyTitle>Your cart is empty. </CartEmptyTitle>
+            <CartEmptyTitle>Your cart is empty.</CartEmptyTitle>
             <CartEmptyButton to="/shop">Go shop</CartEmptyButton>
           </>
         ) : (
@@ -108,16 +131,66 @@ export default function CartPage() {
 
             <TotalSection>
               <CartTotalInner>
-                <CartTotalTitle>
-                  Cart Total
-                </CartTotalTitle>
+                <CartTotalTitle>Cart Total</CartTotalTitle>
 
+                {/* Coupon Input */}
+                <div style={{ marginBottom: '1rem' }}>
+                  <input
+                    type="text"
+                    placeholder="Enter coupon code"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    style={{
+                      padding: '8px',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                      marginRight: '8px',
+                      width: '60%'
+                    }}
+                  />
+                  <button
+                    onClick={handleApplyCoupon}
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: '#007BFF',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Apply
+                  </button>
+                  {couponError && <p style={{ color: 'red', marginTop: '5px' }}>{couponError}</p>}
+                  {validCoupon && (
+                    <p style={{ color: 'green', marginTop: '5px' }}>
+                      Coupon "{validCoupon.couponCode}" applied — {validCoupon.discountPercent}% off!
+                    </p>
+                  )}
+                </div>
+
+                {/* Price Breakdown */}
                 <CardPriceBreak>
-                  <CardPriceInner><strong>Item Total: </strong> <span>${total.toFixed(2)}</span></CardPriceInner>
-                  <CardPriceInner><strong>Gst & Tax (18%): </strong> <span>${gst.toFixed(2)}</span></CardPriceInner>
-                  <CardPriceInner><strong>Delivery Fees: </strong> <span>${deliveryFee.toFixed(2)}</span></CardPriceInner>
-                  <CardPriceInner><strong>Total:</strong> <span>${grandTotal.toFixed(2)}</span></CardPriceInner>
+                  <CardPriceInner>
+                    <strong>Item Total: </strong> <span>${total.toFixed(2)}</span>
+                  </CardPriceInner>
+                  {discountPercent > 0 && (
+                    <CardPriceInner>
+                      <strong>Discount ({discountPercent}%): </strong>
+                      <span>-${discountAmount.toFixed(2)}</span>
+                    </CardPriceInner>
+                  )}
+                  <CardPriceInner>
+                    <strong>GST & Tax (18%): </strong> <span>${gst.toFixed(2)}</span>
+                  </CardPriceInner>
+                  <CardPriceInner>
+                    <strong>Delivery Fees: </strong> <span>${deliveryFee.toFixed(2)}</span>
+                  </CardPriceInner>
+                  <CardPriceInner>
+                    <strong>Total:</strong> <span>${grandTotal.toFixed(2)}</span>
+                  </CardPriceInner>
                 </CardPriceBreak>
+
                 <CheckoutBtn to="/checkout">Check Out</CheckoutBtn>
               </CartTotalInner>
             </TotalSection>

@@ -21,6 +21,7 @@ export const Product = () => {
     deal: {
       isDeal: false,
       discountPercent: "",
+      dealName: "",
       couponCode: "",
       isActive: false,
       expiry: ""
@@ -93,6 +94,7 @@ export const Product = () => {
     formDataToSend.append("deal[couponCode]", formData.deal.couponCode);
     formDataToSend.append("deal[isActive]", String(formData.deal.isActive));
     formDataToSend.append("deal[expiry]", formData.deal.expiry);
+    formDataToSend.append("deal[dealName]", formData.deal.dealName)
 
     if (formData.image) {
       formDataToSend.append("image", formData.image);
@@ -140,7 +142,8 @@ export const Product = () => {
           discountPercent: "",
           couponCode: "",
           isActive: false,
-          expiry: ""
+          expiry: "",
+          dealName: ""
         }
       });
 
@@ -185,6 +188,7 @@ export const Product = () => {
         isDeal: prod.deal?.isDeal || false,
         discountPercent: prod.deal?.discountPercent || '',
         couponCode: prod.deal?.couponCode || '',
+        dealName: prod.deal?.dealName || '',
         isActive: prod.deal?.isActive || false,
         expiry: prod.deal?.expiry ? new Date(prod.deal.expiry).toISOString().slice(0, 16) : ''
       }
@@ -219,6 +223,7 @@ export const Product = () => {
             <input type="checkbox" name="deal.isDeal" checked={formData.deal.isDeal} onChange={handleChange} />
             Is Deal?
           </label>
+          <input type="text" name="deal.dealName" placeholder='Deal Name' value={formData.deal.dealName} onChange={handleChange}/>
           <input name="deal.discountPercent" type="number" placeholder="Discount Percent" value={formData.deal.discountPercent} onChange={handleChange} />
           <input name="deal.couponCode" placeholder="Coupon Code" value={formData.deal.couponCode} onChange={handleChange} />
           <label>
